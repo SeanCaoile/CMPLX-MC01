@@ -62,7 +62,7 @@ to-report spawnhouse?
 end
 
 to-report spawnpoi?
-  report 1 = 2
+  report
   ; function
 end
 
