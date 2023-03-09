@@ -4,7 +4,9 @@ breed [pois poi]
 houses-own
 [
   status
-  class
+  high?
+  mid?
+  low?
 ]
 
 pois-own
@@ -25,7 +27,7 @@ to setup
   [
     set shape "institution"
     set size 3
-    set color green
+    set color yellow
     set reach (5)
   ]
 
@@ -35,36 +37,80 @@ to go
 
     tick
     if spawnhouse? [
-       ask one-of patches[
-        sprout-houses 1[
-          set size 3
-          set color yellow
-          set shape "house"
-        ]
-       ]
+       generatehouse
     ]
     if spawnpoi?[
-       ask one-of patches[
-         sprout-pois 1[
-          set size 3
-          set color green
-          set shape "institution"
-        ]
-
-      ]
+       generatepoi
     ]
 
 
 end
+
+to generatehouse
+   ask one-of patches[
+        sprout-houses 1[
+      show [count pois in-radius 2] of patch pxcor pycor
+      show [count pois in-radius 4] of patch pxcor pycor
+         set high? [count pois in-radius 2] of patch pxcor pycor >= 1
+         ifelse high? [
+            set size 3
+         ]
+         [
+           set mid? [count pois in-radius 4] of patch pxcor pycor >= 1
+           ifelse mid?[
+             set size 2
+           ]
+           [
+             set low? 1 = 1
+             ifelse low?[
+               set size 1
+             ]
+             []
+           ]
+
+         ]
+
+
+          set shape "house"
+          set color one-of [red blue green]
+          set status color
+
+        ]
+       ]
+end
+
+to find-new-spot-house
+  right random-float 360
+  fd random-float 10
+  if any? other houses-here [ find-new-spot-house ]
+  move-to patch-here
+end
+
+
+to generatepoi
+
+
+
+end
+
+to find-new-spot-poi
+  right random-float 360
+  fd random-float 10
+  if any? other pois-here [ find-new-spot-poi ]
+  move-to patch-here
+end
+
 
 to-report spawnhouse?
   report ticks mod 3 = 0
 end
 
 to-report spawnpoi?
-  report
+  report 1 = 2
   ; function
 end
+
+
 
 
 
