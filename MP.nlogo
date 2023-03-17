@@ -12,6 +12,8 @@ houses-own
 pois-own
 [
   reach
+  good?
+
 ]
 
 turtles-own[
@@ -26,7 +28,7 @@ to setup
   ask pois
   [
     set shape "institution"
-    set size 3
+    set size 2
     set color yellow
     set reach (5)
   ]
@@ -44,33 +46,34 @@ to go
     ]
 
 
+
 end
 
 to generatehouse
    ask one-of patches[
+
         sprout-houses 1[
 
-         set high? [count pois in-radius 3] of patch pxcor pycor >= 1
-         ifelse high? [
-            set size 3
+         set low? [count pois in-radius 9] of patch pxcor pycor >= 1
+         ifelse low?[
+            set shape "house bungalow"
          ]
          [
-           set mid? [count pois in-radius 6] of patch pxcor pycor >= 1
-           ifelse mid?[
-             set size 2
-           ]
-           [
-             set low? 1 = 1
-             ifelse low?[
-               set size 1
-             ]
-             []
-           ]
-
+            die
+            generatehouse
          ]
 
+         set mid? [count pois in-radius 6] of patch pxcor pycor >= 1
+         if mid?[
+            set shape "house colonial"
+         ]
 
-          set shape "house"
+         set high? [count pois in-radius 3] of patch pxcor pycor >= 1
+         if high? [
+            set shape "house two story"
+         ]
+
+          set size 2
           set color one-of [red blue green]
           set status color
 
@@ -87,6 +90,20 @@ end
 
 
 to generatepoi
+
+     ask one-of patches[
+        if [count houses in-radius 9] of patch pxcor pycor >= 180[
+           sprout-pois 1[
+             set shape "institution"
+             set size 1
+             set color yellow
+             set reach (5)
+           ]
+        ]
+     ]
+
+
+
 
 
 
@@ -105,23 +122,20 @@ to-report spawnhouse?
 end
 
 to-report spawnpoi?
-  report 1 = 2
-  ; function
+  ;report [count houses in-radius 9] of patch pxcor pycor >= 180
+ report 1 = 1
 end
-
-
-
 
 
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
-647
-448
+1133
+934
 -1
 -1
-13.0
+15.0
 1
 10
 1
@@ -131,10 +145,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--16
-16
--16
-16
+-30
+30
+-30
+30
 0
 0
 1
@@ -263,6 +277,21 @@ Circle -7500403 true true 110 75 80
 Line -7500403 true 150 100 80 30
 Line -7500403 true 150 100 220 30
 
+building store
+false
+0
+Rectangle -7500403 true true 30 45 45 240
+Rectangle -16777216 false false 30 45 45 165
+Rectangle -7500403 true true 15 165 285 255
+Rectangle -16777216 true false 120 195 180 255
+Line -7500403 true 150 195 150 255
+Rectangle -16777216 true false 30 180 105 240
+Rectangle -16777216 true false 195 180 270 240
+Line -16777216 false 0 165 300 165
+Polygon -7500403 true true 0 165 45 135 60 90 240 90 255 135 300 165
+Rectangle -7500403 true true 0 0 75 45
+Rectangle -16777216 false false 0 0 75 45
+
 butterfly
 true
 0
@@ -385,6 +414,58 @@ Rectangle -7500403 true true 45 120 255 285
 Rectangle -16777216 true false 120 210 180 285
 Polygon -7500403 true true 15 120 150 15 285 120
 Line -16777216 false 30 120 270 120
+
+house bungalow
+false
+0
+Rectangle -7500403 true true 210 75 225 255
+Rectangle -7500403 true true 90 135 210 255
+Rectangle -16777216 true false 165 195 195 255
+Line -16777216 false 210 135 210 255
+Rectangle -16777216 true false 105 202 135 240
+Polygon -7500403 true true 225 150 75 150 150 75
+Line -16777216 false 75 150 225 150
+Line -16777216 false 195 120 225 150
+Polygon -16777216 false false 165 195 150 195 180 165 210 195
+Rectangle -16777216 true false 135 105 165 135
+
+house colonial
+false
+0
+Rectangle -7500403 true true 270 75 285 255
+Rectangle -7500403 true true 45 135 270 255
+Rectangle -16777216 true false 124 195 187 256
+Rectangle -16777216 true false 60 195 105 240
+Rectangle -16777216 true false 60 150 105 180
+Rectangle -16777216 true false 210 150 255 180
+Line -16777216 false 270 135 270 255
+Polygon -7500403 true true 30 135 285 135 240 90 75 90
+Line -16777216 false 30 135 285 135
+Line -16777216 false 255 105 285 135
+Line -7500403 true 154 195 154 255
+Rectangle -16777216 true false 210 195 255 240
+Rectangle -16777216 true false 135 150 180 180
+
+house two story
+false
+0
+Polygon -7500403 true true 2 180 227 180 152 150 32 150
+Rectangle -7500403 true true 270 75 285 255
+Rectangle -7500403 true true 75 135 270 255
+Rectangle -16777216 true false 124 195 187 256
+Rectangle -16777216 true false 210 195 255 240
+Rectangle -16777216 true false 90 150 135 180
+Rectangle -16777216 true false 210 150 255 180
+Line -16777216 false 270 135 270 255
+Rectangle -7500403 true true 15 180 75 255
+Polygon -7500403 true true 60 135 285 135 240 90 105 90
+Line -16777216 false 75 135 75 180
+Rectangle -16777216 true false 30 195 93 240
+Line -16777216 false 60 135 285 135
+Line -16777216 false 255 105 285 135
+Line -16777216 false 0 180 75 180
+Line -7500403 true 60 195 60 240
+Line -7500403 true 154 195 154 255
 
 institution
 false
