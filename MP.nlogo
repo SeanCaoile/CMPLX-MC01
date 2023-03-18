@@ -38,15 +38,25 @@ end
 
 to go
 
-    tick
-    if spawnhouse? [
-       generatehouse
-    ]
-    if spawnpoi?[
-       generatepoi
-    ]
+  tick
+  if spawnhouse? [
+    generatehouse
+  ]
+  if spawnpoi?[
+    generatepoi
+  ]
+  ;statusChange
 
 end
+
+to statusChange
+  ask houses[
+    if rng?[
+      find-new-spot-house
+    ]
+  ]
+end
+
 
 to generatehouse
    ask one-of patches[
@@ -116,7 +126,7 @@ end
 
 to generatepoi
      ask one-of patches[
-        if [count houses in-radius 9] of patch pxcor pycor >= 120[
+        if [count houses in-radius 9] of patch pxcor pycor >= 100[
            sprout-pois 1[
 
         if [count houses in-radius 0] of patch pxcor pycor >= 1[
@@ -128,6 +138,12 @@ to generatepoi
                 die
                 generatepoi
              ]
+
+             if [count pois in-radius 6] of patch pxcor pycor > 1[
+                die
+                generatepoi
+             ]
+
 
              set shape "institution"
              set size 1
@@ -148,6 +164,9 @@ to find-new-spot-poi
   move-to patch-here
 end
 
+to-report rng?
+  report random 10000 = 0
+end
 
 to-report spawnhouse?
   report ticks mod 3 = 0
